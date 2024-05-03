@@ -2,7 +2,6 @@ package ftracker
 
 import (
 	"fmt"
-	"math"
 )
 
 // Основные константы, необходимые для расчетов.
@@ -49,12 +48,12 @@ func ShowTrainingInfo(action int, trainingType string, duration, weight, height 
 	switch {
 	case trainingType == "Бег":
 		distance := float64(action) * lenStep                      // вызовите здесь необходимую функцию
-		speed := distance / (duration / 3600)                      // вызовите здесь необходимую функцию
+		speed := distance / duration * minInH                      // вызовите здесь необходимую функцию
 		calories := RunningSpentCalories(action, weight, duration) // вызовите здесь необходимую функцию
 		return fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n", trainingType, duration, distance, speed, calories)
 	case trainingType == "Ходьба":
 		distance := float64(action) * lenStep                              // вызовите здесь необходимую функцию
-		speed := distance / (duration / 3600)                              // вызовите здесь необходимую функцию
+		speed := distance / duration * minInH                              // вызовите здесь необходимую функцию
 		calories := WalkingSpentCalories(action, duration, weight, height) // вызовите здесь необходимую функцию
 		return fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n", trainingType, duration, distance, speed, calories)
 	case trainingType == "Плавание":
@@ -104,7 +103,14 @@ func WalkingSpentCalories(action int, duration, weight, height float64) float64 
 	// ваш код здесь
 	speed := meanSpeed(action, duration)
 	speedInMsec := speed * kmhInMsec
-	return ((walkingCaloriesWeightMultiplier*weight + (math.Pow(speedInMsec, 2)/height*cmInM)*walkingSpeedHeightMultiplier*weight) * duration * minInH)
+	heightInM := height / cmInM
+
+	weightCalories := walkingCaloriesWeightMultiplier * weight
+	speedCalories := speedInMsec * speedInMsec / heightInM * walkingSpeedHeightMultiplier * weight
+
+	totalCalories := (weightCalories + speedCalories) * duration * minInH
+
+	return totalCalories
 }
 
 // Константы для расчета калорий, расходуемых при плавании.

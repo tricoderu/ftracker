@@ -48,13 +48,13 @@ func ShowTrainingInfo(action int, trainingType string, duration, weight, height 
 	// ваш код здесь
 	switch {
 	case trainingType == "Бег":
-		distance := float64(action) * lenStep / mInKm              // вызовите здесь необходимую функцию
-		speed := distance / duration * minInH                      // вызовите здесь необходимую функцию
+		distance := distance(action)                               // вызовите здесь необходимую функцию
+		speed := meanSpeed(action, duration)                       // вызовите здесь необходимую функцию
 		calories := RunningSpentCalories(action, weight, duration) // вызовите здесь необходимую функцию
 		return fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n", trainingType, duration, distance, speed, calories)
 	case trainingType == "Ходьба":
-		distance := float64(action) * lenStep / mInKm                      // вызовите здесь необходимую функцию
-		speed := distance / duration * minInH                              // вызовите здесь необходимую функцию
+		distance := distance(action)                                       // вызовите здесь необходимую функцию
+		speed := meanSpeed(action, duration)                               // вызовите здесь необходимую функцию
 		calories := WalkingSpentCalories(action, duration, weight, height) // вызовите здесь необходимую функцию
 		return fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n", trainingType, duration, distance, speed, calories)
 	case trainingType == "Плавание":
